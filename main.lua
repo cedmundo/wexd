@@ -1,23 +1,12 @@
+require 'spaceship'
 
 -- Ship variables
-local shipSprite = nil
-local shipCurFrm = nil
-local currentAnim = {}
-local straightFrames = {}
-local leftFrames = {}
-local rightFrames = {}
-local frmet = 0
-local shipFrmCnt = 0
-
-local shipPosX = 0
-local shipPosY = 0
+local spaceship = Spaceship()
 
 -- Bolts
-local boltSpawnOffset = 25
 local boltSprite = nil
-local bolt = {}
-local shipWeapon = {}
 local shipBolts = {}
+local bolt = {}
 
 -- Background
 local background = nil
@@ -33,21 +22,10 @@ function love.load()
     love.window.setTitle('WeXD')
     title = love.graphics.newImage('logo.png')
     background = love.graphics.newImage('background.png')
-    shipSprite = love.graphics.newImage('ship.png')
     boltSprite = love.graphics.newImage('laser-bolts.png')
 
-    -- Ship frames
-    straightFrames[0] = love.graphics.newQuad(32, 0, 16, 24, shipSprite:getDimensions())
-    straightFrames[1] =love.graphics.newQuad(32, 24, 16, 24, shipSprite:getDimensions())
-
-    leftFrames[0] = love.graphics.newQuad(0, 0, 16, 24, shipSprite:getDimensions())
-    leftFrames[1] =love.graphics.newQuad(0, 24, 16, 24, shipSprite:getDimensions())
-
-    rightFrames[0] = love.graphics.newQuad(64, 0, 16, 24, shipSprite:getDimensions())
-    rightFrames[1] =love.graphics.newQuad(64, 24, 16, 24, shipSprite:getDimensions())
-
-    currentAnim = straightFrames
-    shipCurFrm = currentAnim[0]
+    -- Spaceship
+    spaceship:load()
 
     -- Laser bolts
     bolt[0] = love.graphics.newQuad(0, 0, 16, 16, boltSprite:getDimensions())
@@ -55,40 +33,22 @@ function love.load()
     bolt[2] = love.graphics.newQuad(16, 0, 16, 16, boltSprite:getDimensions())
     bolt[3] = love.graphics.newQuad(16, 16, 16, 16, boltSprite:getDimensions())
 
-    shipWeapon = bolt[0]
-
-    shipPosX = love.graphics.getWidth()/2 - shipSprite:getWidth()/2
-    shipPosY = background:getHeight()
+    spaceship.weapon = bolt[0]
 end
 
 function love.update(dt)
-    offset = (offset + (dt * 40)) % background:getHeight()
+   -- Update background state
+   offset = (offset + (dt * 40)) % background:getHeight()
 
-    if love.keyboard.isDown('right') and shipPosX < love.graphics.getWidth() - 32 then
-        shipPosX = shipPosX + 5
-        currentAnim=rightFrames
-    elseif love.keyboard.isDown('left') and shipPosX > 0 then
-        shipPosX = shipPosX - 5
-        currentAnim=leftFrames
-    else
-        currentAnim=straightFrames
-    end
+    -- Update current anim (ship)
+    spaceship:update(dt)
 
-    if love.keyboard.isDown('up') then
-        shipPosY = shipPosY - 5
-    end
+    spaceship.movingLeft   = love.keyboard.isDown('left')
+    spaceship.movingRight  = love.keyboard.isDown('right')
+    spaceship.movingUp     = love.keyboard.isDown('up')
+    spaceship.movingDown   = love.keyboard.isDown('down')
 
-    if love.keyboard.isDown('down') then
-        shipPosY = shipPosY + 5
-    end
-
-    frmet = frmet + dt
-    if frmet > 0.1 then
-        frmet = 0
-        shipFrmCnt = shipFrmCnt + 1
-        shipCurFrm = currentAnim[shipFrmCnt % 2]
-    end
-
+    -- Update bolts state
     for k,v in ipairs(shipBolts) do
         v.y = v.y - 5
         if v.y < 0 then
@@ -96,22 +56,27 @@ function love.update(dt)
         end
 
         local _, _, bw, bh = v.b:getViewport()
-        local _, _, sw, sb = shipCurFrm:getViewport()
+        local _, _, sw, sb = spaceship.currentAnim:frame():getViewport()
 
-        if CheckCollision(v.x, v.y, bw, bh, shipPosX, shipPosY, sw, sb) then
-            gameState = 'title'
-            table.remove(shipBolts, k)
+        if CheckCollision(v.x, v.y, bw, bh, spaceship.pos.x, spaceship.pos.y, sw, sb) then
+            shipBolts = {}
+
+            spaceship.didDestroy = function()
+               gameState = 'title'
+            end
+            spaceship:destroy()
         end
     end
 end
 
 function love.keypressed(key)
    if key == "space" then
-       table.insert(shipBolts, {x = shipPosX, y = shipPosY - boltSpawnOffset, b = shipWeapon})
+       table.insert(shipBolts, {x = spaceship.pos.x, y = spaceship.pos.y - spaceship.shootOffset, b = spaceship.weapon})
    end
 
    if gameState == 'title' then
        gameState = 'game'
+       spaceship:reset()
    end
 end
 
@@ -120,8 +85,7 @@ function love.draw()
     love.graphics.draw(background, 0, offset, 0, 2, 2)
 
     if gameState == 'game' then
-        -- love.graphics.line(0, offset, love.graphics.getWidth(), offset)
-        love.graphics.draw(shipSprite, shipCurFrm, shipPosX, shipPosY, 0, 2, 2)
+        spaceship:draw()
 
         for k,v in ipairs(shipBolts) do
             love.graphics.draw(boltSprite, v.b, v.x, v.y, 0, 2, 2)
