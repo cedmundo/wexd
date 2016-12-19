@@ -1,11 +1,15 @@
 require 'spaceship'
 require 'missileManager'
+require 'enemyManager'
 
 -- Ship variables
 local spaceship = Spaceship()
 
 -- Missile Manager
 local missileManager = MissileManager()
+
+-- Enemy Manager
+local enemyManager = EnemyManager(missileManager)
 
 -- Background
 local background = nil
@@ -45,6 +49,9 @@ function love.update(dt)
    -- Update missile manager
    missileManager:update(dt)
 
+   -- Update enemy manager
+   enemyManager:update(dt)
+
    spaceship.movingLeft   = love.keyboard.isDown('left')
    spaceship.movingRight  = love.keyboard.isDown('right')
    spaceship.movingUp     = love.keyboard.isDown('up')
@@ -73,6 +80,7 @@ function love.draw()
    if gameState == 'game' then
       spaceship:draw()
       missileManager:draw()
+      enemyManager:draw()
 
    elseif gameState == 'title' then
       love.graphics.draw(title, love.graphics.getWidth()/2 - title:getWidth()/2, 0, 0, 1, 1)
