@@ -1,6 +1,7 @@
 -- Spaceship game object
 require 'class'
 require 'anim'
+require 'missile'
 
 class 'Spaceship'
 
@@ -18,6 +19,7 @@ function Spaceship:Spaceship()
    self.weapon = nil
    self.shootOffset = 25
    self.didDestroy = function() end
+   self.viewport = {w = 32, h = 48}
 
    self.movingRight = false
    self.movingLeft = false
@@ -62,6 +64,10 @@ function Spaceship:reset()
    self.currentAnim = self.straightAnim
 end
 
+function Spaceship:didCollision(proj)
+   self:destroy()
+end
+
 function Spaceship:update(dt)
     self.currentAnim:update(dt)
 
@@ -90,6 +96,11 @@ function Spaceship:update(dt)
     end
 end
 
+function Spaceship:shoot(mm)
+   local pm = PlayerMissile(mm.styles[0], {x = self.pos.x + (self.viewport.w / 2 - 8), y = self.pos.y - 25})
+   mm:addProjectile(pm)
+end
+
 function Spaceship:draw()
    if self.state == 'alive' then
       love.graphics.draw(self.shipSprite, self.currentAnim:frame(), self.pos.x, self.pos.y, 0, 2, 2)
@@ -98,4 +109,5 @@ function Spaceship:draw()
    if self.state == 'exploding' then
       love.graphics.draw(self.explSprite, self.currentAnim:frame(), self.pos.x, self.pos.y, 0, 2, 2)
    end
+   -- love.graphics.rectangle('line', self.pos.x, self.pos.y, self.viewport.w, self.viewport.h)
 end
