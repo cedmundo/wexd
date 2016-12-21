@@ -1,6 +1,7 @@
 require 'spaceship'
 require 'missileManager'
 require 'enemyManager'
+require 'enemy'
 
 -- Ship variables
 local spaceship = Spaceship()
@@ -21,6 +22,9 @@ local gameState = 'title'
 -- Title screen
 local title = nil
 
+-- Temp: enemy
+local enemy = BigEnemy(missileManager)
+
 function love.load()
    love.window.setTitle('WeXD')
    title = love.graphics.newImage('logo.png')
@@ -37,6 +41,14 @@ function love.load()
    -- Missile Manager
    missileManager:load()
    missileManager:addCollisionable(spaceship)
+
+   -- Temp: Enemy load
+   enemy:load()
+   enemy.pos = {x = 10, y = 10}
+   enemy:addPathTarget(2, {x = 200, y = 100})
+   enemy:addPathTarget(2, {x = 0, y = 200})
+   enemy:addPathTarget(2, {x = 200, y = 300})
+   enemyManager:addEnemy(enemy)
 end
 
 function love.update(dt)
@@ -59,7 +71,7 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-   if key == " " then
+   if key == " " or key == "space" then
       spaceship:shoot(missileManager)
    end
 
