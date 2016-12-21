@@ -1,7 +1,7 @@
 require 'spaceship'
 require 'missileManager'
 require 'enemyManager'
-require 'enemy'
+require 'levelManager'
 
 -- Ship variables
 local spaceship = Spaceship()
@@ -11,6 +11,9 @@ local missileManager = MissileManager()
 
 -- Enemy Manager
 local enemyManager = EnemyManager(missileManager)
+
+-- Level Manager
+local levelManager = LevelManager(enemyManager, missileManager)
 
 -- Background
 local background = nil
@@ -22,9 +25,6 @@ local gameState = 'title'
 -- Title screen
 local title = nil
 
--- Temp: enemy
-local enemy = BigEnemy(missileManager)
-
 function love.load()
    love.window.setTitle('WeXD')
    title = love.graphics.newImage('logo.png')
@@ -34,6 +34,7 @@ function love.load()
    spaceship:load()
    spaceship.didDestroy = function()
       gameState = 'title'
+      levelManager:reset()
       missileManager:reset()
       missileManager:addCollisionable(spaceship)
    end
@@ -42,32 +43,34 @@ function love.load()
    missileManager:load()
    missileManager:addCollisionable(spaceship)
 
-   -- Temp: Enemy load
-   enemy:load()
-   enemy.pos = {x = 10, y = 10}
-   enemy:addPathTarget(2, {x = 200, y = 100})
-   enemy:addPathTarget(2, {x = 0, y = 200})
-   enemy:addPathTarget(2, {x = 200, y = 300})
-   enemyManager:addEnemy(enemy)
+   -- Level manager
+   levelManager:load()
 end
 
 function love.update(dt)
    -- Update background state
    offset = (offset + (dt * 40)) % background:getHeight()
 
-   -- Update current anim (ship)
-   spaceship:update(dt)
+   if gameState == 'game' then
+      -- Update current anim (ship)
+      spaceship:update(dt)
 
-   -- Update missile manager
-   missileManager:update(dt)
+      -- Update missile manager
+      missileManager:update(dt)
 
-   -- Update enemy manager
-   enemyManager:update(dt)
+      -- Update enemy manager
+      enemyManager:update(dt)
 
-   spaceship.movingLeft   = love.keyboard.isDown('left')
-   spaceship.movingRight  = love.keyboard.isDown('right')
-   spaceship.movingUp     = love.keyboard.isDown('up')
-   spaceship.movingDown   = love.keyboard.isDown('down')
+      -- Update level manager
+      if levelManager.update then
+         levelManager:update(dt)
+      end
+
+      spaceship.movingLeft   = love.keyboard.isDown('left')
+      spaceship.movingRight  = love.keyboard.isDown('right')
+      spaceship.movingUp     = love.keyboard.isDown('up')
+      spaceship.movingDown   = love.keyboard.isDown('down')
+   end
 end
 
 function love.keypressed(key)

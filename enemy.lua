@@ -52,8 +52,11 @@ function Enemy:addShootOrder(tpos, time)
     table.insert(self.shoots, {pos = tpos, at = time})
 end
 
-function Enemy:didCollision(_)
-   self:destroy()
+function Enemy:didCollision(other)
+    if not other.state then
+       self:destroy()
+       other:destroy()
+    end
 end
 
 function Enemy:shoot()

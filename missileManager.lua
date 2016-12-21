@@ -36,6 +36,21 @@ function MissileManager:update(dt)
          end
       end
    end
+
+   for i, col1 in ipairs(self.collisionables) do
+      for j, col2 in ipairs(self.collisionables) do
+         if not (i == j) then
+            local vwp1 = col1.viewport
+            local vwp2 = col2.viewport
+            local pos1 = col1.pos
+            local pos2 = col2.pos
+
+            if checkCollision(pos1.x, pos1.y, vwp1.w, vwp1.h, pos2.x, pos2.y, vwp2.w, vwp2.h) then
+               col1:didCollision(col2)
+            end
+         end
+      end
+   end
 end
 
 function MissileManager:draw()
@@ -58,10 +73,15 @@ function MissileManager:addProjectile(mis)
       error('Object doesn\'t have viewport property')
    end
 
+   local c = #self.projectiles + 1
+   mis.remove = function()
+      table.remove(self.projectiles, c)
+   end
+
    table.insert(self.projectiles, mis)
 end
 
-function MissileManager:addCollisionable(obj)
+function MissileManager:addCollisionable(name, obj)
    if not obj.didCollision then
       error('No didCollision method for object')
    end
@@ -74,7 +94,11 @@ function MissileManager:addCollisionable(obj)
       error('Object doesn\'t have viewport property')
    end
 
-   table.insert(self.collisionables, obj)
+   self.collisionables[name] = obj
+end
+
+function MissileManager:delCollisionable(name)
+   table.remove(self.collisionables, name)
 end
 
 -- This script was written by Luiji Maryo, http://github.com/Luiji .

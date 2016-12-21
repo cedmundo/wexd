@@ -5,6 +5,7 @@ function Missile:Missile(style)
    self.pos = {x = 0, y = 0}
    self.viewport = {w = 16, h = 16}
    self.style = style
+   self.destroy = function() end
 end
 
 class 'PlayerMissile' (Missile)

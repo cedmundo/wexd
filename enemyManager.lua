@@ -24,8 +24,13 @@ function EnemyManager:draw()
    end
 end
 
-function EnemyManager:addEnemy(enemy)
-   table.insert(self.enemies, enemy)
-   self.missileManager:addCollisionable(enemy)
+function EnemyManager:addEnemy(name, enemy)
+   enemy.didDestroy = function()
+      table.remove(self.enemies, name)
+      self.missileManager:delCollisionable(name)
+   end
+
+   self.enemies[name] = enemy
+   self.missileManager:addCollisionable(name, enemy)
 end
 

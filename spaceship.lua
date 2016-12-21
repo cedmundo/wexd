@@ -47,6 +47,7 @@ function Spaceship:load()
       self.didDestroy()
     end
 
+    self.pos = {x = love.graphics.getWidth() / 2 - 16, y = love.graphics.getHeight() - 48}
     self.currentAnim = self.straightAnim
     self.shipSprite = shipsprite
     self.explSprite = explsprite
@@ -64,8 +65,11 @@ function Spaceship:reset()
    self.currentAnim = self.straightAnim
 end
 
-function Spaceship:didCollision(proj)
-   self:destroy()
+function Spaceship:didCollision(other)
+   if (self.state == 'alive' and other.state == 'alive') or (self.state == 'alive' and not other.state) then
+      self:destroy()
+      other:destroy()
+   end
 end
 
 function Spaceship:update(dt)
