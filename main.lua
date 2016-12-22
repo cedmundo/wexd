@@ -36,12 +36,12 @@ function love.load()
       gameState = 'title'
       levelManager:reset()
       missileManager:reset()
-      missileManager:addCollisionable(spaceship)
+      missileManager:addCollisionable('spaceship', spaceship)
    end
 
    -- Missile Manager
    missileManager:load()
-   missileManager:addCollisionable(spaceship)
+   missileManager:addCollisionable('spaceship', spaceship)
 
    -- Level manager
    levelManager:load()
