@@ -25,7 +25,7 @@ function MissileManager:update(dt)
    for _, proj in ipairs(self.projectiles) do
       proj:update(dt)
 
-      for _, coll in ipairs(self.collisionables) do
+      for _, coll in pairs(self.collisionables) do
          local pvwp = proj.viewport
          local cvwp = coll.viewport
          local ppos = proj.pos
@@ -37,8 +37,8 @@ function MissileManager:update(dt)
       end
    end
 
-   for i, col1 in ipairs(self.collisionables) do
-      for j, col2 in ipairs(self.collisionables) do
+   for i, col1 in pairs(self.collisionables) do
+      for j, col2 in pairs(self.collisionables) do
          if not (i == j) then
             local vwp1 = col1.viewport
             local vwp2 = col2.viewport
@@ -74,7 +74,7 @@ function MissileManager:addProjectile(mis)
    end
 
    local c = #self.projectiles + 1
-   mis.remove = function()
+   mis.destroy = function()
       table.remove(self.projectiles, c)
    end
 
@@ -98,7 +98,7 @@ function MissileManager:addCollisionable(name, obj)
 end
 
 function MissileManager:delCollisionable(name)
-   table.remove(self.collisionables, name)
+   self.collisionables[name] = nil
 end
 
 -- This script was written by Luiji Maryo, http://github.com/Luiji .

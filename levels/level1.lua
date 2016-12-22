@@ -25,12 +25,14 @@ return function(self, dt)
       e1:load()
       e1.pos = {x = xcenter - 100, y = -20}
       e1:addPathTarget(6, {x = xcenter - 100, y = yoffscr})
+      e1:addShootOrder(4)
       self.enemyManager:addEnemy('2-e1', e1)
 
       local e2 = SmallEnemy(self.missileManager)
       e2:load()
       e2.pos = {x = xcenter + 100, y = -20}
       e2:addPathTarget(6, {x = xcenter + 100, y = yoffscr})
+      e2:addShootOrder(4)
       self.enemyManager:addEnemy('2-e2', e2)
    end
 

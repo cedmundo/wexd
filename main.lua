@@ -34,6 +34,7 @@ function love.load()
    spaceship:load()
    spaceship.didDestroy = function()
       gameState = 'title'
+      enemyManager:reset()
       levelManager:reset()
       missileManager:reset()
       missileManager:addCollisionable('spaceship', spaceship)

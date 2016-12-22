@@ -13,20 +13,20 @@ function EnemyManager:reset()
 end
 
 function EnemyManager:update(dt)
-   for _, v in ipairs(self.enemies) do
+   for _, v in pairs(self.enemies) do
       v:update(dt)
    end
 end
 
 function EnemyManager:draw()
-   for _, v in ipairs(self.enemies) do
+   for k, v in pairs(self.enemies) do
        v:draw()
    end
 end
 
 function EnemyManager:addEnemy(name, enemy)
    enemy.didDestroy = function()
-      table.remove(self.enemies, name)
+      self.enemies[name] = nil
       self.missileManager:delCollisionable(name)
    end
 

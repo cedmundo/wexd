@@ -48,15 +48,15 @@ function Enemy:addPathTarget(dur, tpos)
     table.insert(self.path, tween.new(dur, self.pos, tpos))
 end
 
-function Enemy:addShootOrder(tpos, time)
-    table.insert(self.shoots, {pos = tpos, at = time})
+function Enemy:addShootOrder(t)
+    table.insert(self.shoots, {time = t})
 end
 
 function Enemy:didCollision(other)
-    if not other.state then
-       self:destroy()
-       other:destroy()
-    end
+   if not other.state then
+      other:destroy()
+      self:destroy()
+   end
 end
 
 function Enemy:shoot()
@@ -74,12 +74,12 @@ function Enemy:update(dt)
       end
     end
 
-    -- for _, v in ipairs(self.shoots) do
-    --     if v.time >= self.elapsed then
-    --         self:shoot()
-    --         table.remove(self.shoots, v)
-    --     end
-    -- end
+    for k, v in ipairs(self.shoots) do
+        if v.time >= self.elapsed then
+            self:shoot()
+            table.remove(self.shoots, k)
+        end
+    end
 end
 
 function Enemy:draw()
