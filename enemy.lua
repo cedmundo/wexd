@@ -60,7 +60,8 @@ function Enemy:didCollision(other)
 end
 
 function Enemy:shoot()
-    print('bang!')
+   local pm = EnemyMissile(self.missileManager.styles[0], {x = self.pos.x + (self.viewport.w / 2 - 8), y = self.pos.y + 25})
+   self.missileManager:addProjectile(pm)
 end
 
 function Enemy:update(dt)
