@@ -8,7 +8,7 @@ return function(ship)
 
    ship.name = 'player'
    ship.initialState = 'movingForward'
-   ship.initialAnim = anim8.newAnimation(gp(3, '1-2'), 0.1)
+   ship.initialAnim = anim8.newAnimation(gp(3, '1-2'), 0.05)
    ship.initialSpritesheet = pss
    ship.initialOffset = {x = 8, y = 12}
    ship.events = {
