@@ -3,9 +3,10 @@ local manager
 
 function love.load()
     manager = SceneManager:new()
-    manager:replaceScene("mainmenu")
+    manager:enter()
 
-    love.window.setTitle(".:WEXD:.")
+    manager:replaceScene("mainmenu")
+    love.window.setTitle(".: WEXD :.")
 end
 
 function love.update(dt)
@@ -14,4 +15,17 @@ end
 
 function love.draw()
     manager:draw()
+end
+
+function love.keyreleased(key)
+   if key == "escape" then
+      love.event.quit()
+   end
+
+   manager:keyreleased(key)
+end
+
+function love.quit()
+    manager:exit()
+    return false
 end

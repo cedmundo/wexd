@@ -5,6 +5,18 @@ function SceneManager:initialize()
     self.currentScene = nil
 end
 
+function SceneManager:enter()
+    self.backgroundMusic = love.audio.newSource('assets/background-1.mp3')
+    self.backgroundMusic:play()
+end
+
+function SceneManager:exit()
+    self.backgroundMusic:stop()
+    if self.currentScene then
+        self.currentScene:stop()
+    end
+end
+
 function SceneManager:replaceScene(name)
     chunk, errmsg = love.filesystem.load('assets/' .. name .. '.lua')
     if errmsg then
@@ -32,6 +44,12 @@ end
 function SceneManager:draw()
     if self.currentScene then
         self.currentScene:draw()
+    end
+end
+
+function SceneManager:keyreleased(key)
+    if self.currentScene and self.currentScene.keyreleased then
+        self.currentScene:keyreleased(key)
     end
 end
 

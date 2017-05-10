@@ -12,7 +12,6 @@ function Scene:initialize(manager)
        {name = 'stop', from = {'running', 'paused'}, to = 'stopped'},
    }
    self.initialState = 'standby'
-   self.manager = nil
    self:buildstates()
 end
 
