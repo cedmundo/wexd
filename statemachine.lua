@@ -1,4 +1,3 @@
-local inspect = require 'inspect'
 local class = require 'middleclass'
 local Transformable = require 'transformable'
 local StateMachine = class ('StateMachine', Transformable)
