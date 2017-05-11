@@ -7,7 +7,7 @@ end
 
 function SceneManager:enter()
     self.backgroundMusic = love.audio.newSource('assets/background-1.mp3')
-    self.backgroundMusic:play()
+    -- self.backgroundMusic:play()
 end
 
 function SceneManager:exit()
