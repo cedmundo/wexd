@@ -1,3 +1,4 @@
+-- main.lua
 local SceneManager = require 'scenemanager'
 local manager
 
