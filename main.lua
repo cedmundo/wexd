@@ -8,10 +8,12 @@ function love.load()
   bg_load()
   ui_load()
   pl_load()
+  start_time = love.timer.getTime()
 end
 
 function love.update()
   dt = love.timer.getDelta()
+  ellapsed_time = start_time - love.timer.getTime()
   bg_update(dt)
   pl_update(dt)
   ui_update(dt)
