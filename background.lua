@@ -30,6 +30,7 @@ end
 
 function bg_draw()
   -- Background draw
+  -- love.graphics.setColor(0, 0, 1, 0.5)
   love.graphics.draw(bg_image, bg_quad, 0, bg_offset0)
   love.graphics.draw(bg_image, bg_quad, 0, bg_offset1)
 end
