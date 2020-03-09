@@ -12,12 +12,14 @@ function love.load()
   ui_load()
   pl_load()
   en_load()
-  start_time = love.timer.getTime()
 end
 
 function love.update()
   dt = love.timer.getDelta()
-  ellapsed_time = love.timer.getTime() - start_time
+  if game_state == 'playing' then
+    ellapsed_time = love.timer.getTime() - start_time
+  end
+
   bg_update(dt)
   pl_update(dt)
   ui_update(dt)
