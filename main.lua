@@ -7,7 +7,7 @@ function love.load()
     manager:enter()
 
     manager:replaceScene("mainmenu")
-    love.window.setTitle(".: WEXD :.")
+    love.window.setTitle(".: WEXD OLD :.")
 end
 
 function love.update(dt)
